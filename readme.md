@@ -1,4 +1,4 @@
-Fawbesturn project
+neuroner project
 =======================
 
 This project is based on [Wagtail CMS](https://github.com/wagtail/wagtail).
