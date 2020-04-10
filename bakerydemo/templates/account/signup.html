@@ -1,0 +1,80 @@
+{% extends "wagtailadmin/admin_base.html" %}
+{% load wagtailadmin_tags i18n %}
+{% block titletag %}{% trans "Sign in" %}{% endblock %}
+{% block bodyclass %}login{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="{% versioned_static 'wagtailadmin/css/layouts/login.css' %}" type="text/css" />
+{% endblock %}
+
+{% block furniture %}
+    <main class="content-wrapper" role="main">
+        {% if messages or form.errors %}
+            <div class="messages">
+                <ul>
+                    {% if form.errors %}
+                        <li class="error">{% blocktrans %}Your {{ username_field }} and password didn't match. Please try again.{% endblocktrans %}</li>
+                    {% endif %}
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% block above_login %}{% endblock %}
+
+        <form method="post" autocomplete="off" novalidate>
+            {% block login_form %}
+            {% csrf_token %}
+
+            {% url 'wagtailadmin_home' as home_url %}
+            <input type="hidden"  />
+
+            <h1>{% block branding_login %}{% trans "Registration to " %}<a href="/">NEURONER</a>{% endblock %}</h1>
+
+<ul class="fields">
+{% for field in form %}
+    <li class="full">
+    <div class="field iconfield">
+        {{ field.errors }}
+        {{ field.label_tag }}
+        {{ form.login.label_tag }}
+        <div class="input icon-user">
+        {{ field }}
+        </div>
+        {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+        {% endif %}
+    </div>
+    </li>
+{% endfor %}
+   <li class="submit">
+       {% block submit_buttons %}
+       <button type="submit" class="button button-longrunning" data-clicked-text="{% trans 'Signing Up…' %}"><span class="icon icon-spinner"></span><em>{% trans 'Sign Up' %}</em></button>
+       <a href="{% url 'account_login' %}" class="button button-secondary button-longrunning" data-clicked-text="{% trans 'Sign In' %}"><span class="icon icon-spinner"></span><em>{% trans 'Sign In' %}</em></a>
+
+       {% endblock %}
+   </li>
+</ul>
+
+
+
+        {% endblock %}
+        </form>
+
+        {% block below_login %}{% endblock %}
+
+    </main>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    $(function(){
+        $('form input[name=username]').trigger('focus');
+    })
+</script>
+{% endblock %}

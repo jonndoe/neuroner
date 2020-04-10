@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags navigation_tags wagtailimages_tags comments crispy_forms_tags  %}
+
+{% block content %}
+
+    {% image self.image fill-1920x600 as hero_img %}
+        {% include "base/include/header-hero.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {% if page.introduction %}
+                    <p class="intro">{{ page.introduction }}</p>
+                {% endif %}
+
+                <div class="blog-meta">
+                    {% if page.owner %}
+                        <div class="blog-avatars">
+                            <div class="author">
+                                <img src="{% if page.owner.wagtail_userprofile.avatar %}{{ page.owner.wagtail_userprofile.avatar.url }}{% else %}http://www.gravatar.com/avatar/d9de46e1d58a2d3e76c948fcb82f04dc?s=100&d=mm{% endif %}" class="blog-avatar">
+                                {% if page.owner.first_name %}
+                                    {{ page.owner.first_name }} {{ page.owner.last_name }}
+                                {% else %}
+                                    {{ page.owner }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if page.date_published %}
+                        <div class="blog-byline">
+                            {{ page.date_published }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {{ page.body }}
+
+                {% if page.get_tags %}
+                    Tagged with:<br />
+                    {% for tag in page.get_tags  %}
+                        <a href="{{ tag.url }}" class="btn btn-sm">{{ tag }}</a>
+                    {% endfor %}
+                {% endif %}
+
+
+                <div  class="container">
+                    <p>Comments {% get_comment_count for page as comment_count %} {{ comment_count }}</p>
+                </div>
+
+                <div class="">
+                {% if user.is_authenticated %}
+                    {% get_comment_form for page as form %}
+                    <form action="{% comment_form_target %}" method="POST" class="">
+
+                    {% csrf_token %}
+                    {{ form.comment }}
+                    {{ form.honeypot }}
+                    {{ form.content_type }}
+                    {{ form.object_pk }}
+                    {{ form.timestamp }}
+                    {{ form.security_hash }}
+
+                    <input type="hidden" name="next" value="{% pageurl page %}#comments" />
+                    <br>
+                    <input type="submit" class="btn btn-primary" value="Add comment" id="id_submit" />
+                    </form>
+                {% else %}
+                    <p>Please <a href="{% url 'account_login' %}">log in</a> to leave a comment.</p>
+                {% endif %}
+                    <br>
+                </div>
+
+                 <div  class="list-group">
+                 {% get_comment_list for page as comment_list %}
+                 {% for comment in comment_list %}
+                     <a href="#!" class="list-group-item list-group-item-action flex-column align-items-start">
+                     <div class="d-flex w-100 justify-content-between">
+                       <h5 class="mb-1">{{ comment.user }}</h5>
+                       <h5 class="mb-1">{{ comment.submit_date }}</h5>
+                        <p class="mb-1">{{ comment.comment }}</p>
+                     </div>
+
+                     <small>Like    Dislike</small>
+                     </a>
+                 {% endfor %}
+                     <div id="comments"></div>
+                 </div>
+
+
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}

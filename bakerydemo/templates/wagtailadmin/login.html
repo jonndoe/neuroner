@@ -1,0 +1,12 @@
+{% extends "wagtailadmin/login.html" %}
+
+{% load wagtailadmin_tags i18n %}
+{% block titletag %}{% trans "Sign in" %}{% endblock %}
+{% block bodyclass %}login{% endblock %}
+
+{% block branding_login %}{% trans "Log In to " %}<a href="/">NEURONER</a>{% endblock %}
+
+{% block submit_buttons %}
+    <button type="submit" class="button button-longrunning" data-clicked-text="{% trans 'Signing in…' %}"><span class="icon icon-spinner"></span><em>{% trans 'Sign in' %}</em></button>
+    <a href="{% url 'account_signup' %}" class="button button-secondary button-longrunning" data-clicked-text="{% trans 'Sign Up' %}"><span class="icon icon-spinner"></span><em>{% trans 'Sign Up' %}</em></a>
+{% endblock %}

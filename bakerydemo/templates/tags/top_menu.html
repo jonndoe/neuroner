@@ -1,0 +1,36 @@
+{% load navigation_tags wagtailcore_tags %}
+{% get_site_root as site_root %}
+
+{% for menuitem in menuitems %}
+  <li class="presentation {{ menuitem.title|lower|cut:" " }}{% if menuitem.active %} active{% endif %}{% if menuitem.show_dropdown %} has-submenu{% endif %}">
+      {% if menuitem.show_dropdown %}
+          <a href="{% pageurl menuitem %}" class="allow-toggle">{{ menuitem.title }} <span><a class="caret-custom dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"></a></span></a>
+              {% top_menu_children parent=menuitem %}
+              {# Used to display child menu items #}
+      {% else %}
+          <a href="{% pageurl menuitem %}" role="menuitem">{{ menuitem.title }}</a>
+      {% endif %}
+  </li>
+{% endfor %}
+
+
+{% if request.user.is_authenticated %}
+<li class="presentation">
+    <a href="{% url 'wagtailadmin_home' %}" role="menuitem">Dashboard,<b>{{ request.user.username }}</b></a>
+</li>
+<li class="presentation">
+    <a href="{% url 'account_logout' %}" role="menuitem">LogOut</a>
+</li>
+{% else %}
+<li class="presentation">
+    <a href="{% url 'account_login' %}" role="menuitem">SignIn</a>
+</li>
+<li class="presentation">
+    <a href="{% url 'account_signup' %}" role="menuitem">SignUp</a>
+</li>
+{% endif %}
+
+
+
+
+
